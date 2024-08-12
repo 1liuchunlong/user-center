@@ -1,0 +1,22 @@
+
+# 应用服务 WEB 访问端口
+server:
+  port: 8080
+#下面这些内容是为了让MyBatis映射
+#指定Mybatis的Mapper文件
+spring:
+  application:
+    name: user-center
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/yupi
+    username: root
+    password: lcl7
+
+# mybatis-plus
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: isDelete # 全局逻辑删除字段名
+      logic-delete-value: 1 # 逻辑已删除值
+      logic-not-delete-value: 0 # 逻辑未删除值
