@@ -81,11 +81,11 @@ public class UserServiceTest {
     }
 
     @Test
-    public void doLogin() {
+    public void userLogin() {
         String userAccount = "chunchun";
         String userPassword = "12345678";
         HttpServletRequest request =null ;
-        User user = userService.doLogin(userAccount, userPassword, request);
+        User user = userService.userLogin(userAccount, userPassword, request);
         Assertions.assertNotNull(user);
 
     }

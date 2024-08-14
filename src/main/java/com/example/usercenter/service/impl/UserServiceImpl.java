@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.example.usercenter.constant.UserConstant.USER_LOGIN_STATE;
+
 /**
 * @author chunchun
 * @description 针对表【user(用户)】的数据库操作Service实现
@@ -30,7 +32,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     
     private static final String SALT = "chunchun";
 
-    private static final String USER_LOGIN_STATE = "userLoginState";
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
         // 1. 校验
@@ -86,7 +87,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      * @return 脱敏用户信息
      */
     @Override
-    public User doLogin(String userAccount, String userPassword, HttpServletRequest request) {
+    public User userLogin(String userAccount, String userPassword, HttpServletRequest request) {
         // todo 需要改成统一的返回类 Result
         if (StringUtils.isAnyBlank(userAccount,userPassword)){
             return null;
@@ -110,8 +111,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             log.info("user login failed, userAccount can not match userPassword");
             return null;
         }
+        User satetyUser = getSafetyUser(user);
+        //记录用户信息的登录态
+        request.getSession().setAttribute(USER_LOGIN_STATE,satetyUser);
+        return satetyUser;
+    }
+
+    /**
+     * 脱敏方法
+     * @param user
+     * @return
+     */
+    public User getSafetyUser(User user){
         // 记录用户的登录志
-        request.getSession().setAttribute(USER_LOGIN_STATE,user);
         // 用户信息脱敏
         User satetyUser = new User();
         satetyUser.setId(user.getId());
@@ -123,8 +135,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         satetyUser.setEmail(user.getEmail());
         satetyUser.setUserStatus(user.getUserStatus());
         satetyUser.setCreateTime(user.getCreateTime());
-        //记录用户信息的登录态
-        request.getSession().setAttribute(USER_LOGIN_STATE,satetyUser);
         return satetyUser;
     }
 }
